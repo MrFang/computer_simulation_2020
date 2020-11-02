@@ -1,4 +1,5 @@
 from math import factorial
+from decimal import localcontext, Decimal
 
 print(
     "Условие: \n "
@@ -18,14 +19,51 @@ recovery_intensity = 1 / t_recovery
 probabilities = []
 probabilities.append(1)
 
-for idx in range(N):
-    probabilities[0] += (factorial(N) / factorial(N - (idx + 1)) * problem_intensity ** (idx + 1)) / (
-            factorial(idx + 1) * recovery_intensity ** (idx + 1))
+for i in range(N):
+    with localcontext() as ctx:
+        ctx.prec = 32
+        a = ctx.multiply(
+            ctx.divide(
+                factorial(N),
+                factorial(N - (i + 1))
+            ),
+            ctx.power(
+                Decimal(problem_intensity),
+                i+1
+            )
+        )
+        b = ctx.multiply(
+            factorial(i+1),
+            ctx.power(
+                Decimal(recovery_intensity),
+                i + 1
+            )
+        )
+        probabilities[0] += ctx.divide(a, b)
+
 probabilities[0] = 1 / probabilities[0]
 
-for idx in range(N):
-    probabilities.append(probabilities[0] * (problem_intensity ** (idx + 1) * factorial(N) / factorial(N - (idx + 1))) / (
-            factorial(idx + 1) * recovery_intensity ** (idx + 1)))
+for i in range(N):
+    with localcontext() as ctx:
+        ctx.prec = 32
+        a = ctx.multiply(
+            ctx.power(
+                Decimal(problem_intensity),
+                i+1
+            ),
+            ctx.divide(
+                factorial(N),
+                factorial(N - (i + 1))
+            )
+        )
+        b = ctx.multiply(
+            factorial(i+1),
+            ctx.power(
+                Decimal(recovery_intensity),
+                i + 1
+            )
+        )
+        probabilities.append(probabilities[0] * ctx.divide(a, b))
 
 print('Результаты расчета надежности системы:')
 for idx, value in enumerate(probabilities):
