@@ -2,7 +2,9 @@ from math import factorial
 from decimal import localcontext, Decimal
 repeated = True
 bb = True
-while repeated == True: 
+
+while repeated:
+
     if bb != 0:
         print(
             "Условие:\n"
@@ -22,6 +24,9 @@ while repeated == True:
         probabilities = []
         probabilities.append(1)
 
+        """
+            Считаем вероятность P_1
+        """
         for i in range(N):
             with localcontext() as ctx:
                 ctx.prec = 32
@@ -46,6 +51,9 @@ while repeated == True:
 
         probabilities[0] = 1 / probabilities[0]
 
+        """
+            Считаем вероятности P_2 ... P_(N+1)
+        """
         for i in range(N):
             with localcontext() as ctx:
                 ctx.prec = 32
@@ -79,8 +87,8 @@ while repeated == True:
                 else:
                     print('Вероятность выхода из строя ' + str(idx) + ' компьютеров: ')
                 print(str(value) + '\n')
+
         print('Введите 0 - если хотите выйти или любую другую цифру для продолжения')
         bb = int(input())
     else:
         break
-        
